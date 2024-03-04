@@ -10,18 +10,20 @@ import Foundation
 @MainActor
 class ProductViewModel: ObservableObject{
     
-    @Published var tiempo: [Product] = []
+    @Published var productos: [Product] = []
+   
+    init() {
+            Task {
+                await getProducts()
+            }
+        }
     
-    init(){
-        getProduct(url: "&q=Gasteiz&days=5"); // CAMBIAR
-    }
-    
-    func getProduct(url:String){
+    func getProducts(){
             Task{ //hace que sea asíncrona la tarea, consiguiendo concurrencia
-                do{
-                    let weather = try await NetworkManager.shared.getProduct(url: url)
-                    self.tiempo.append(weather)
-                }catch{
+                do {
+                            let products = try await NetworkManager.shared.getProducts()
+                            self.productos.append(contentsOf: products)
+                } catch {
                     
                     if let callError = error as? WEError {
                         switch callError{

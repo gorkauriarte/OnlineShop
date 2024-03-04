@@ -10,24 +10,22 @@ import Foundation
 class NetworkManager {
 
     static let shared = NetworkManager()
-    
-    private let API_KEY = "e2328341c6e747fa849202946242901"
-    
+        
     private let baseUrl = "https://fakestoreapi.com/products"
     
-    func getProduct(url: String) async throws -> Product{
-        guard let completeUrl =  URL(string: baseUrl + API_KEY + url) else {
-            throw WEError.invalidURL
+    func getProducts() async throws -> [Product] {
+            guard let completeUrl = URL(string: baseUrl) else {
+                throw WEError.invalidURL
+            }
+            
+            let (data, _) = try await URLSession.shared.data(from: completeUrl)
+           
+            do {
+                let decoder = JSONDecoder()
+                return try decoder.decode([Product].self, from: data)
+            } catch {
+                throw WEError.invalidData
+            }
         }
-        
-        let(data, response) = try await URLSession.shared.data(from: completeUrl)
-       
-        do{
-            let decoder = JSONDecoder()
-            return try decoder.decode(Product.self, from: data)
-        }catch{
-            throw WEError.invalidData
-        }
-    }
 }
 
