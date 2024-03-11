@@ -11,13 +11,16 @@ import Firebase
 
 @main
 struct OnlineShopApp: App {
+    var productvm :ProductosDBViewModel
     init() {
         FirebaseApp.configure()
-    }
+        productvm =  ProductosDBViewModel()
 
+    }
+    
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            ContentView().environmentObject(productvm)
         }
     }
 }
