@@ -9,48 +9,42 @@ import SwiftUI
 
 struct HomeView: View {
     @ObservedObject private var productViewModel = ProductViewModel()
-    @State private var selectedProduct: Product? = nil
 
+    @State private var selectedProduct: Product?
+    static let carrito: [Product] = []
+    @State private var isDetailViewPresented = false
+    
     var body: some View {
         NavigationView {
-            ZStack {
-                List(productViewModel.productos) { product in
-                    ProductRow(product: product)
-                        .onTapGesture {
-                            selectedProduct = product
-                        }
-                }
-                .padding(10)
-                .navigationBarTitle("Lista de Productos")
-
+            List(productViewModel.productos) { product in
                 NavigationLink(
-                    destination: ProductDetailView(product: selectedProduct),
-                    isActive: Binding(
-                        get: { selectedProduct != nil },
-                        set: { newValue in
-                            if !newValue {
-                                selectedProduct = nil
-                            }
-                        }
-                    )
+                    destination: ProductDetailView(product: product, isPresented: $isDetailViewPresented),
+                    tag: product,
+                    selection: $selectedProduct
                 ) {
-                    EmptyView()
+                    ProductRow(product: product)
                 }
-                .hidden()
             }
+               
+            .padding(10)
+            .navigationBarTitle("Lista de Productos")
         }
     }
 }
 
+
+
 struct ProductDetailView: View {
+    @Environment(\.presentationMode) var presentationMode
     var product: Product
+    @Binding var isPresented: Bool
+    @EnvironmentObject private var ProductosDBViewModel : ProductosDBViewModel
 
     var body: some View {
         VStack {
             HStack {
                 Spacer()
                 Button(action: {
-                    // Cerrar la vista de detalle
                     presentationMode.wrappedValue.dismiss()
                 }) {
                     Image(systemName: "xmark.circle.fill")
@@ -83,8 +77,9 @@ struct ProductDetailView: View {
             Spacer()
 
             Button(action: {
-                // Aquí puedes agregar la lógica para agregar el producto al carrito
-                // Por ahora, simplemente imprime un mensaje
+                self.ProductosDBViewModel.productoDataBase.append(product)
+                isPresented = false
+                presentationMode.wrappedValue.dismiss()
                 print("Añadir al carrito: \(product.title)")
             }) {
                 HStack {

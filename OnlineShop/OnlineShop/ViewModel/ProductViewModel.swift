@@ -6,6 +6,8 @@
 //
 
 import Foundation
+import FirebaseFirestore
+import SwiftUI
 
 @MainActor
 class ProductViewModel: ObservableObject{
@@ -45,6 +47,13 @@ class ProductViewModel: ObservableObject{
             }
         }
 }
+
+
+
+
+
+
+
 
 
 

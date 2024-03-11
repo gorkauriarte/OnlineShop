@@ -19,5 +19,4 @@ struct Product: Hashable, Codable, Identifiable{
 
 struct Rating: Hashable, Codable {
     var rate: Double
-    var count: Double
 }

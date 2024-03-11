@@ -8,46 +8,55 @@
 import SwiftUI
 
 struct OrderView: View {
-
+    
+    @EnvironmentObject var vm: ProductosDBViewModel
+    
     var body: some View {
         VStack {
-            HStack {
-                Text("Lista de Compra")
-                    .font(.title)
-                    .fontWeight(.bold)
-                Spacer()
+            List(vm.productoDataBase) { producto in
+                ProductoFila(producto: producto)
             }
-            .padding()
-
-            List {
-                HStack {
-                   
-                    VStack(alignment: .leading) {
-                        Text("asdas")
-                            .font(.headline)
-                        Text("precio")
-                            .font(.subheadline)
-                    }
-                    Spacer()
-                }
-                .padding(.vertical, 8)
-            }
-            .padding()
-
-            Spacer()
-
+            
             Button(action: {
+                self.vm.addProduct()
             }) {
-                Text("Comprar")
+                Text("\(String(format: "%.2f", self.calculateTotal())) € - Checkout")
                     .foregroundColor(.white)
                     .padding()
-                    .background(Color.blue)
+                    .background(Color.green)
                     .cornerRadius(10)
             }
-            .padding(.bottom, 50)
         }
     }
+
+    private func calculateTotal() -> Double {
+        return vm.productoDataBase.reduce(0.0) { $0 + $1.price }
+    }
 }
-#Preview {
-    OrderView()
+
+struct ProductoFila: View {
+    var producto: Product
+    var body: some View {
+        HStack {
+            AsyncImage(url: URL(string: producto.image)){
+                imagen in
+                if let image = imagen.image{
+                    image.resizable()
+                        .frame(width: 50, height: 50)
+                }
+            }
+            VStack {
+                Text(producto.title + "\n$ "+String(producto.price))
+            }.padding()
+        }.padding()
+    }
 }
+
+
+struct OrderView_Previews: PreviewProvider {
+    static var previews: some View {
+        OrderView()
+    }
+}
+
+
