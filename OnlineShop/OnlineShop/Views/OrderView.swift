@@ -20,7 +20,7 @@ struct OrderView: View {
             Button(action: {
                 self.vm.addProduct()
             }) {
-                Text("\(String(format: "%.2f", self.calculateTotal())) € - Checkout")
+                Text("\(String(format: "%.2f", calculateTotal())) € - Checkout")
                     .foregroundColor(.white)
                     .padding()
                     .background(Color.green)
@@ -36,27 +36,31 @@ struct OrderView: View {
 
 struct ProductoFila: View {
     var producto: Product
+    
     var body: some View {
         HStack {
-            AsyncImage(url: URL(string: producto.image)){
-                imagen in
-                if let image = imagen.image{
-                    image.resizable()
+            AsyncImage(url: URL(string: producto.image)) { imagen in
+                if let image = imagen.image {
+                    image
+                        .resizable()
                         .frame(width: 50, height: 50)
                 }
             }
-            VStack {
-                Text(producto.title + "\n$ "+String(producto.price))
-            }.padding()
-        }.padding()
+            
+            VStack(alignment: .leading) {
+                Text(producto.title)
+                Text("$ \(String(format: "%.2f", producto.price))")
+                    .foregroundColor(.gray)
+            }
+            .padding()
+        }
+        .padding()
     }
 }
-
 
 struct OrderView_Previews: PreviewProvider {
     static var previews: some View {
         OrderView()
     }
 }
-
 
