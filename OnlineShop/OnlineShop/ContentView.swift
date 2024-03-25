@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ContentView: View {
     @State private var isDarkMode = false
+    @StateObject private var productViewModel = ProductosDBViewModel()
 
     var body: some View {
         NavigationView {
@@ -27,9 +28,27 @@ struct ContentView: View {
 
                 OrderView()
                     .tabItem {
-                        Image(systemName: "list.bullet")
-                        Text("Order")
+                        ZStack {
+                            Image(systemName: "cart")
+                                .foregroundColor(.white)
+                                .font(.title)
+                                .padding(6)
+                                .background(Color.red)
+                                .clipShape(Circle())
+
+                            if productViewModel.productoDataBase.count > 0 {
+                                Text("\(productViewModel.productoDataBase.count)")
+                                    .foregroundColor(.white)
+                                    .font(.caption)
+                                    .offset(x: 10, y: -10)
+                            }
+                            else {
+                                Text("Order")
+                            }
+                        }
+                        .padding(10)
                     }
+                    .tag(3)
             }
             .accentColor(.blue)
             .navigationBarItems(trailing:
@@ -42,9 +61,13 @@ struct ContentView: View {
                 }
             )
             .preferredColorScheme(isDarkMode ? .dark : .light)
+            .environmentObject(productViewModel)
         }
     }
 }
+
+
+
 
 #Preview {
     ContentView()

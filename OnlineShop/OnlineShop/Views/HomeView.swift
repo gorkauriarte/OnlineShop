@@ -33,7 +33,6 @@ struct HomeView: View {
 }
 
 
-
 struct ProductDetailView: View {
     @Environment(\.presentationMode) var presentationMode
     var product: Product
@@ -73,6 +72,23 @@ struct ProductDetailView: View {
                 .font(.body)
                 .foregroundColor(.gray)
                 .padding()
+            
+            
+            HStack {
+                ForEach(1..<6) { index in
+                    if Double(index) - 0.5 <= product.rating.rate && product.rating.rate < Double(index) {
+                        Image(systemName: "star.leadinghalf.fill")
+                            .foregroundColor(.yellow)
+                    } else if Double(index) <= product.rating.rate {
+                        Image(systemName: "star.fill")
+                            .foregroundColor(.yellow)
+                    } else {
+                        Image(systemName: "star")
+                            .foregroundColor(.yellow)
+                    }
+                }
+            }
+
 
             Spacer()
 
